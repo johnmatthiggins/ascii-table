@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
+#include <errno.h>
 #include "ascii.h"
 
 /**
@@ -18,12 +19,20 @@ int main(int argc, char** argv)
     char str_buffer[0x10] = {0};
     char* buf_ptr = row_buffer;
     static int col_count = 8;
+    int entered_col_count = read_column_flag(argv, argc);
+    int col_height = 128 / col_count;
+    
+    if (entered_col_count != -1)
+    {
+        col_count = entered_col_count;
+    }
+
     int x = 0;
     int y = 0;
 
-    for (uint8_t c = 0; c <= 127; c++)
+    for (uint8_t i = 0; i <= 127; i++)
     {
-        char next = y + (x * col_count);
+        char next = y + (x * col_height);
 
         memset(str_buffer, 0, sizeof(str_buffer));
 
@@ -250,4 +259,40 @@ int ctrl_char_str(char c, char* buf)
     }
 
     return str_size;
+}
+
+int read_column_flag(char** args, int argc)
+{
+    int columns = -1;
+    int arg_i   = 0;
+    bool found_flag = 0;
+    bool exit = 0;
+    int parse_var;
+
+    while (arg_i < argc && !exit)
+    {
+        if (!found_flag)
+        {
+            parse_var = atoi(args[arg_i]);
+            if (strcmp(args[arg_i], COL_FLAG) == 0)
+            {
+                found_flag = 1;
+            }
+        }
+        else
+        {
+            errno = 0;
+            parse_var = atoi(args[arg_i]);
+            exit = 1;
+
+            if (!errno)
+            {
+                columns = parse_var;
+            }
+        }
+
+        arg_i++;
+    }
+
+    return columns;
 }

@@ -4,6 +4,7 @@
 #include <string.h>
 
 #define HEX_FLAG "-x"
+#define COL_FLAG "-c"
 
 #define MEMCPY_CONST(destination, source) memcpy((void*)destination, (void*)source, sizeof(source) * sizeof(char))
 
@@ -45,5 +46,6 @@ int char_str(char c, char* buf);
 int print_char_str(char c, char* buf);
 int ctrl_char_str(char c, char* buf);
 bool check_flag(char** args, char* flag);
+int read_column_flag(char** args, int argc);
 
 #endif
