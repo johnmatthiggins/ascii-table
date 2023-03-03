@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 #include "ascii.h"
 
 /**
@@ -10,6 +11,8 @@
  */
 int main(int argc, char** argv)
 {
+    bool hex_output = check_flag(argv, HEX_FLAG);
+
     // more characters than we need but that's okay.
     char row_buffer[0x100] = {0};
     char str_buffer[0x10] = {0};
@@ -26,7 +29,14 @@ int main(int argc, char** argv)
 
         char_str(next, str_buffer);
 
-        sprintf(buf_ptr, "%d\t%s\t", next, str_buffer);
+        if (hex_output)
+        {
+            sprintf(buf_ptr, "0x%02x\t%s\t", next, str_buffer);
+        }
+        else
+        {
+            sprintf(buf_ptr, "%d\t%s\t", next, str_buffer);
+        }
 
         // seek next NUL character.
         while (*buf_ptr) { buf_ptr++; }
@@ -49,6 +59,21 @@ int main(int argc, char** argv)
     }
 
     return 0;
+}
+
+// return 1 if present, 0 if not.
+bool check_flag(char** args, char* flag)
+{
+    bool present = 0;
+
+    while (*args && !present)
+    {
+        present = strcmp(*args, flag) == 0;
+
+        args++;
+    }
+
+    return present;
 }
 
 int char_str(char c, char* buf)
