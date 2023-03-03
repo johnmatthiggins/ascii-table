@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 
         if (hex_output)
         {
-            sprintf(buf_ptr, "0x%02x\t%s\t", next, str_buffer);
+            sprintf(buf_ptr, "%02x\t%s\t", next, str_buffer);
         }
         else
         {
@@ -39,7 +39,10 @@ int main(int argc, char** argv)
         }
 
         // seek next NUL character.
-        while (*buf_ptr) { buf_ptr++; }
+        while (*buf_ptr)
+        {
+            buf_ptr++;
+        }
 
         if (x == col_count - 1)
         {
